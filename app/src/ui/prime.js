@@ -14,13 +14,13 @@ function Prime({toggleGameStarted, setIdentity}) {
     async function getGameId() {
         try {
           const response = await Axios({
-            method: "get",
+            method: "post",
             url: "http://localhost:3210/game",
+            data: {activity: 1}
           });
     
-          setIdentity([response.data.gameid, 1, nick])
+          setIdentity([response.data.gameid, 1])
           toggleGameStarted(true)
-          console.log(nick)
         } catch (error) {
           console.error(error);
         }
@@ -28,8 +28,9 @@ function Prime({toggleGameStarted, setIdentity}) {
       async function joinGame(id) {
         try {
             const response = await Axios({
-            method: "get",
-            url: `http://localhost:3210/game/${id}`,
+            method: "post",
+            url: `http://localhost:3210/game`,
+            data: {activity: 3, id: id}
           });
           if (response.data.player > 0) {
             

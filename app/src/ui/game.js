@@ -44,7 +44,7 @@ function Game({identity}) {
         setGameState(resp)
         setCurrDices(resp.dices_state)
         console.log(gameState)
-        // setCurrDices(resp.dices_state)  
+
             }
         );
     },[])
@@ -52,11 +52,12 @@ function Game({identity}) {
     
     async function send_game_state_when_rerolled() {
         let ns = gameState;
-        ns.clicked_dices = clicked
+        ns.clicked_dices = clicked;
+        ns.activity = 4;
         try {
             await Axios({
             method: "post",
-            url: `http://localhost:3210/game/${identity[0]}/reroll`,
+            url: `http://localhost:3210/game`,
             data: ns
           });
           console.log('gamestate sent', gameState)
@@ -70,8 +71,8 @@ function Game({identity}) {
         try {
             await Axios({
             method: "post",
-            url: `http://localhost:3210/game/${identity[0]}`,
-            data: gameState
+            url: `http://localhost:3210/game}`,
+            data: {...gameState, activity: 5}
           });
           console.log('gamestate sent', gameState)
         } catch (error) {
@@ -99,18 +100,6 @@ function Game({identity}) {
     const reroll = () => {
         if (gameState.rerolls < 3) {
         send_game_state_when_rerolled();
-        }
-    }
-
-    const startGame = async () => {
-        try {
-            const response = await Axios({
-            method: "get",
-            url: `http://localhost:3210/game/${identity[0]}/start`,
-          });
-          
-        } catch (error) {
-          console.error(error);
         }
     }
 

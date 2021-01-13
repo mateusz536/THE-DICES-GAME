@@ -8,8 +8,9 @@ import {useState} from 'react'
 async function start(id) {
     try {
         await Axios({
-        method: "get",
-        url: `http://localhost:3210/game/${id}/start`,
+        method: "post",
+        url: `http://localhost:3210/game`,
+        data: {activity: 2, id: id}
         });
     } catch (error) {
         console.error(error);

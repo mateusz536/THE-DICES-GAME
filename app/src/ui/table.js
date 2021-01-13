@@ -230,11 +230,13 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
       try {
           const response = await Axios({
           method: "post",
-          url: `http://localhost:3210/game/${gameid}/choice`,
+          url: `http://localhost:3210/game`,
           data: {
             player: playerid,
             name: name,
-            points: point
+            points: point,
+            activity: 5,
+            id: gameid
           }
         });
         console.log(response)
