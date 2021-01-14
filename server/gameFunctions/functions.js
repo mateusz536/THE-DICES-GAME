@@ -24,5 +24,16 @@ function getRolls() {
     return {value: x, clicked: false}
 }
 
+function findWinner(state) {
+    let winner = state[0];
+    state.forEach(element => {
+        if (element.points[13] > winner.points[13]) {
+            winner = element;
+        }
+        
+    });
+    return winner.player
+}
 
-module.exports = getRolls
+
+module.exports = {getRolls, findWinner};

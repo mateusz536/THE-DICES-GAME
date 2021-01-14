@@ -130,9 +130,7 @@ function calculateValue(name,value, dicesState) {
               ar1 = [...ar1, el.value]
           });
           ar1.sort((a,b) => a-b);
-          console.log(ar1)
           let uniq = [...new Set(ar1)];
-          console.log(uniq)
           if (uniq.length === 5) {
             if (uniq[0] == uniq[1] - 1 && uniq[1] == uniq[2] - 1 && uniq[2] == uniq[3] - 1 && uniq[3] == uniq[4] - 1) {
               return 40
@@ -176,7 +174,7 @@ const setToSet=(id) => {
 
 
 
-export default function BasicTable({currentMove,gameid,dices, points, playerid, nick}) {
+export default function BasicTable({currentMove,gameid,dices, points, playerid, tableid}) {
   const classes = useStyles();
 
   const findinpoints =  (name) => {
@@ -187,7 +185,7 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
 
 
   const rowsgen = () =>{
-  if (currentMove===playerid) {
+  if (currentMove===playerid && tableid===playerid) {
     return [
       createData('1', calculateValue('1', points[0].value, dices)),
       createData('2', calculateValue('2', points[1].value, dices)),
@@ -226,11 +224,11 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
   const rows = rowsgen();
 
   async function sendChoice(name, point) {
-    if (currentMove === playerid && name !== 'sum') {
+    if (currentMove === playerid && name !== 'sum' && !findinpoints(name)) {
       try {
           const response = await Axios({
           method: "post",
-          url: `http://localhost:3210/game`,
+          url: `/game`,
           data: {
             player: playerid,
             name: name,
@@ -247,8 +245,8 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
   }
 
   return (
-    <TableContainer className='table' component={Paper}>
-      <Table className={classes.table} aria-label="simple table" size='small'>
+    <TableContainer className='ptable'  component={Paper}>
+      <Table className={classes.table} className='ptable' aria-label="simple table" size='small'>
         <TableHead>
           <TableRow>
             <TableCell>Player {playerid}</TableCell>
@@ -264,7 +262,11 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
               <TableCell component="th" scope="row">
                 {row.player}
               </TableCell>
-              <TableCell className={`${playerid === currentMove && row.player!=='sum' && !findinpoints(row.player) ? "move" : ""}`}  align="right" onClick={()=> {
+              <TableCell 
+              className={`${playerid === currentMove && row.player!=='sum' && tableid===playerid && !findinpoints(row.player) ? "move" : ""}`}
+              align="right"
+              style={findinpoints(row.player)? {fontWeight:'bolder'} : {fontWeight: 'normal'}}
+              onClick={()=> {
                 sendChoice(row.player, row.points)
                 setToSet(rowid)
               }}>{row.points}</TableCell> 

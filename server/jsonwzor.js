@@ -6,7 +6,9 @@ const jsonik = {
     rerolls: 0,
     dices_state: [],
     clicked_dices:[],
-    action: ''
+    action: '',
+    rounds: 0,
+    winner: null
     }
 const genPlayerState = (id) => ({ 
     player: id,

@@ -1,6 +1,6 @@
 import Axios from 'axios'
 import Snackbar from '@material-ui/core/Snackbar';
-import {Button} from '@material-ui/core'
+import {Button, TextField} from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert';
 import {useState} from 'react'
 
@@ -9,7 +9,7 @@ async function start(id) {
     try {
         await Axios({
         method: "post",
-        url: `http://localhost:3210/game`,
+        url: `/game`,
         data: {activity: 2, id: id}
         });
     } catch (error) {
@@ -23,7 +23,7 @@ return <MuiAlert elevation={6} variant="filled" {...props} />;
 
 
 
-export default function Gamelobby({id}) {
+export default function Gamelobby({id, chatState, sendMessage, setMessage}) {
     const [open, setOpen] = useState(false);
 
     const handleClick = () => {
@@ -57,6 +57,15 @@ export default function Gamelobby({id}) {
                         ID COPIED!
                     </Alert>
                 </Snackbar>
+                </div>
+                <div className='chat' style={{margin: 'auto', marginTop:'20px', marginBottom:'20px'}}>
+                                    <div className='messdispl'>
+                                        {chatState.slice(0,5).map(m => <p className='mess'>Player {m.player}: {m.message}</p>)}
+                                    </div>
+                                    <div style={{marginTop: '50px'}}>
+                                        <TextField id='chatinput' label="Chat" variant="outlined" onChange={(e) => {setMessage(e.target.value)}}></TextField>
+                                        <Button style={{marginTop: '10px', marginLeft:'5px'}}variant='contained' color='primary' onClick={() => sendMessage()}>send</Button>
+                                    </div>
                 </div>
                 <Button variant='contained'color='primary' onClick={() => start(id)}>START THE GAME</Button>
             </div>

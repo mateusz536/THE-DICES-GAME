@@ -15,7 +15,7 @@ function Prime({toggleGameStarted, setIdentity}) {
         try {
           const response = await Axios({
             method: "post",
-            url: "http://localhost:3210/game",
+            url: "/game",
             data: {activity: 1}
           });
     
@@ -29,12 +29,12 @@ function Prime({toggleGameStarted, setIdentity}) {
         try {
             const response = await Axios({
             method: "post",
-            url: `http://localhost:3210/game`,
+            url: `/game`,
             data: {activity: 3, id: id}
           });
           if (response.data.player > 0) {
             
-            setIdentity([id, response.data.player, nick])
+            setIdentity([id, response.data.player])
             setTimeout(() =>toggleGameStarted(true), 1000)
           } else {
 
