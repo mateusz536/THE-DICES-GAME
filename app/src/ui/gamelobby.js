@@ -3,6 +3,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import {Button, TextField} from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert';
 import {useState} from 'react'
+import Chat from './Chat'
 
 
 async function start(id) {
@@ -23,12 +24,12 @@ return <MuiAlert elevation={6} variant="filled" {...props} />;
 
 
 
-export default function Gamelobby({id, chatState, sendMessage, setMessage}) {
+export default function Gamelobby({state,id, chatState, sendMessage, setMessage}) {
     const [open, setOpen] = useState(false);
 
     const handleClick = () => {
         setOpen(true);
-        copyToClipboard(id)
+        copyToClipboard(id[0])
     };
 
     const handleClose = (event, reason) => {
@@ -39,7 +40,7 @@ export default function Gamelobby({id, chatState, sendMessage, setMessage}) {
     }
     function copyToClipboard(text) {
         var input = document.body.appendChild(document.createElement("input"));
-        input.value = id;
+        input.value = id[0];
         input.focus();
         input.select();
         document.execCommand('copy');
@@ -58,16 +59,11 @@ export default function Gamelobby({id, chatState, sendMessage, setMessage}) {
                     </Alert>
                 </Snackbar>
                 </div>
-                <div className='chat' style={{margin: 'auto', marginTop:'20px', marginBottom:'20px'}}>
-                                    <div className='messdispl'>
-                                        {chatState.slice(0,5).map(m => <p className='mess'>Player {m.player}: {m.message}</p>)}
-                                    </div>
-                                    <div style={{marginTop: '50px'}}>
-                                        <TextField id='chatinput' label="Chat" variant="outlined" onChange={(e) => {setMessage(e.target.value)}}></TextField>
-                                        <Button style={{marginTop: '10px', marginLeft:'5px'}}variant='contained' color='primary' onClick={() => sendMessage()}>send</Button>
-                                    </div>
-                </div>
-                <Button variant='contained'color='primary' onClick={() => start(id)}>START THE GAME</Button>
+                <Chat cl='lobbychat' state={state} chatState={chatState} sendMessage={sendMessage} identity={id[0]}/>
+                {id[1] === 1 ?<Button variant='contained'color='primary' onClick={() => start(id[0])}>START THE GAME</Button>
+                :
+                <div></div>
+}
             </div>
         </div>
     )

@@ -19,7 +19,6 @@ function createData(player, points) {
   return { player, points};
 }
 
-// to zwraca slownik dzieki ktoremu bedzie latwiej obliczyc punkty
 function calculateDiceState (dices) {
   let x = {
     '1': 0,
@@ -158,7 +157,6 @@ function calculateValue(name,value, dicesState) {
   }
 }
 
-console.log(calculateValue('1',0,[{value:1}, {value:1}, {value:2}]));
 
 const calculateSum = (points) => {
   let sum = 0
@@ -224,11 +222,12 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
   const rows = rowsgen();
 
   async function sendChoice(name, point) {
-    if (currentMove === playerid && name !== 'sum' && !findinpoints(name)) {
+    console.log(currentMove, playerid, tableid)
+    if (currentMove === playerid && currentMove === tableid && name !== 'sum' && !findinpoints(name)) {
       try {
           const response = await Axios({
           method: "post",
-          url: `/game`,
+          url: `http://localhost:3210/game`,
           data: {
             player: playerid,
             name: name,
@@ -237,7 +236,6 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
             id: gameid
           }
         });
-        console.log(response)
       } catch (error) {
         console.error(error);
       }
@@ -246,10 +244,10 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
 
   return (
     <TableContainer className='ptable'  component={Paper}>
-      <Table className={classes.table} className='ptable' aria-label="simple table" size='small'>
+      <Table className={classes.table, 'ptable'} aria-label="simple table" size='small'>
         <TableHead>
           <TableRow>
-            <TableCell>Player {playerid}</TableCell>
+            <TableCell>Player {tableid}</TableCell>
             <TableCell onClick={()=> console.log('siema')} align="right">points</TableCell>
           </TableRow>
         </TableHead>

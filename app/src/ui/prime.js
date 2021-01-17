@@ -1,6 +1,6 @@
 import Axios from 'axios'
 import { TextField, Button } from '@material-ui/core';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
 const wzor = require('./jsonwzor')
 const default_state = wzor.jsonik;
@@ -10,6 +10,7 @@ function Prime({toggleGameStarted, setIdentity}) {
     const [inputId, setInputId] = useState("")
     const [nick, setNick] = useState("")
     const [error, setError] = useState("")
+
 
     async function getGameId() {
         try {

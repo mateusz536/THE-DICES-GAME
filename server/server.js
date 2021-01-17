@@ -5,7 +5,7 @@ const uuid = require('uuid')
 const app = express();
 const uuidv4 = uuid.v4
 const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://localhost:1883');
+const client = mqtt.connect('mqtt://10.45.3.52:1883');
 const wzor = require('./jsonwzor')
 const default_game = wzor.jsonik;
 const player_state = wzor.genPlayerState;
@@ -17,9 +17,11 @@ app.use(cors())
 let games = [];
 
 
+
 app.post('/game', (req,res) => {
     console.log(req.body.activity === actions.START)
     switch (req.body.activity) {
+
         case actions.CREATE:
             let id = uuidv4();
             games = [...games, {...default_game, id: id, state: [player_state(1)]}]
@@ -103,11 +105,19 @@ app.post('/chat', (req,res) => {
     let id = req.body.id;
     let playerid = req.body.player;
     let message = req.body.message;
+    let target = req.body.target;
     let son = {
         player: playerid,
-        message: message
+        message: message,
+        target: target
     }
-    client.publish(`game/${id}/chat`, JSON.stringify(son));
+    if (target === 'All' || target === '') {
+        (target === '') ? target='All' : target = target;
+        client.publish(`game/${id}/chat`, JSON.stringify(son));
+    } else {
+        client.publish(`game/${id}/chat/${target}`, JSON.stringify(son))
+    }
+    
     res.send(true)
 })
 
