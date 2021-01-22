@@ -179,7 +179,7 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
     let x = points.find(p => p.name === name);
     return x.chosen
   }
-  
+
 
 
   const rowsgen = () =>{
@@ -227,7 +227,7 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
       try {
           const response = await Axios({
           method: "post",
-          url: `http://localhost:3210/game`,
+          url: `/game`,
           data: {
             player: playerid,
             name: name,

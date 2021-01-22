@@ -158,8 +158,8 @@ function Game({identity}) {
                                 </div>
                                 <div className='info'>
                                     <h3>You are player {identity[1]}</h3>
-                                    <h2>It's player's {gameState.move} move</h2>
-                                    
+                                    <h2>move: player {gameState.move}</h2>
+                                    <h2 style={{color: 'orange'}}>rerolls left {3-gameState.rerolls}</h2>
                                     
                                 </div>
                             </div>

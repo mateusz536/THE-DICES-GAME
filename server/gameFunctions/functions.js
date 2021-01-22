@@ -4,6 +4,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
+
 function getRolls() {
 
 
@@ -12,10 +13,20 @@ function getRolls() {
     return {value: x, clicked: false}
 }
 
+const calculateSum = (points) => {
+  let sum = 0
+  points.forEach(el => {
+    sum += el.value
+  })
+  return sum
+}
+
 function findWinner(state) {
     let winner = state[0];
     state.forEach(element => {
-        if (element.points[13] > winner.points[13]) {
+	let win = calculateSum(winner.points)
+	let x = calculateSum(element.points)
+        if (x > win) {
             winner = element;
         }
         

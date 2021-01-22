@@ -29,7 +29,6 @@ app.post('/game', (req,res) => {
 
         
         case actions.START:
-            console.log('START')
             let game1 = games.find(g => g.id === req.body.id)
             game1.started = true
             let id1 = req.body.id;
@@ -37,7 +36,6 @@ app.post('/game', (req,res) => {
             return res.send(true)
 
         case actions.REROLL:
-            console.log('reroroll')
             let game2 = games.find(g => g.id === req.body.id);
             let dices = req.body.dices_state;
             if (dices.length === 0) {
@@ -105,6 +103,9 @@ app.post('/chat', (req,res) => {
     let id = req.body.id;
     let playerid = req.body.player;
     let message = req.body.message;
+    if (message.length > 40) {
+	message = message.slice(0,40);
+}
     let target = req.body.target;
     let son = {
         player: playerid,

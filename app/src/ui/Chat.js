@@ -20,11 +20,16 @@ const Chat = ({state,cl,chatState, sendMessage}) => {
       }));
     const classes = useStyles();
 
-    
+    const reversedChat = (chat) => {
+	console.log(chatState)
+	return chat.slice(-5)
+}
+
+
     return (
         <div className={cl?'lobbychat' : 'chat'}>
             <div className='messdispl'>
-                {chatState.reverse().slice(0,5).map(m => <p className={`mess${m.player}`}>({m.target === 'All' || m.target==="" ? 'All' : 'Direct'}) | Player {m.player}: {m.message}</p>)}
+                {reversedChat(chatState).map(m => <p className={`mess${m.player}`}>({m.target === 'All' || m.target==="" ? 'All' : 'Direct'}) | Player {m.player}: {m.message}</p>)}
             </div>
             <div style={{marginTop: '50px'}}>
             <FormControl variant="filled" className={classes.formControl}>
