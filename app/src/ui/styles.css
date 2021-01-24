@@ -1,3 +1,4 @@
+
 body {
     background-color: rgb(246, 222, 222);
     padding:15px;
@@ -131,30 +132,27 @@ img {
 }
 
 .mess1 {
-    width: 80%;
-    border-radius: 10px;
+    display: flex;
+    border-radius: 20px;
     background-color: yellow;
-    margin: auto;
     margin-top: 8px;
     padding-left: 3px;
     text-align: left;
     word-wrap: break-word
 }
 .mess2 {
-    width: 80%;
-    border-radius: 10px;
+    display: flex;
+    border-radius: 20px;
     background-color: salmon;
-    margin: auto;
     margin-top: 8px;
     padding-left: 3px;
     text-align: left;
     word-wrap: break-word
 }
 .mess3 {
-    width: 80%;
-    border-radius: 10px;
+    display: flex;
+    border-radius: 20px;
     background-color: skyblue;
-    margin: auto;
     margin-top: 8px;
     padding-left: 3px;
     text-align: left;
@@ -164,10 +162,11 @@ img {
 .info {
     background-color: white;
     height: 24vh;
-    padding: 20px;
+    width: 20vw;
+    padding: 15px;
     border-radius: 30px;
     color: white;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     font-size: x-large;
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 2px 2px 0 #000, -1px 0 1px #000;
     box-shadow: 5px 5px 5px black;
@@ -177,4 +176,14 @@ img {
 
 .rolltable {
     width: 45vw;
+}
+
+.mess0 {
+	display: flex;
+    border-radius: 20px;
+    background-color: green;
+    margin-top: 8px;
+    padding-left: 3px;
+    text-align: left;
+    word-wrap: break-word
 }

@@ -33,7 +33,7 @@ function Prime({toggleGameStarted, setIdentity}) {
             url: `/game`,
             data: {activity: 3, id: id}
           });
-          if (response.data.player > 0) {
+          if (response.data.player >= 0) {
             
             setIdentity([id, response.data.player])
             setTimeout(() =>toggleGameStarted(true), 1000)

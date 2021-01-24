@@ -113,7 +113,7 @@ function calculateValue(name,value, dicesState) {
           });
           ar.sort((a,b) => a-b);
           let uniq1 = [...new Set(ar)];
-          if (uniq1.length === 4) {
+          if (uniq1.length >= 4) {
               if (uniq1[0] == uniq1[1] - 1 && uniq1[1] == uniq1[2] - 1 && uniq1[2] == uniq1[3] - 1) {
                   return 30
               }

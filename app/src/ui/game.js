@@ -6,6 +6,7 @@ import dice4 from '../materials/dice4.png'
 import dice5 from '../materials/dice5.png'
 import dice6 from '../materials/dice6.png'
 import {v4 as uuidv4} from 'uuid'
+import FastRewindIcon from '@material-ui/icons/FastRewind';
 import {Button,TextField} from '@material-ui/core'
 import BasicTable from './table'
 import Chat from './Chat'
@@ -22,7 +23,6 @@ const client = mqtt.connect('mqtt://10.45.3.52:8000/mqtt');
 
 
 function Game({identity}) {
-    
     const [gameState, setGameState] = useState({ started: false, state: [], dices_state:[]});
     const [chatState, setChatState] = useState([]);
     const [clicked, setClicked] = useState([]);
@@ -30,12 +30,11 @@ function Game({identity}) {
     useEffect(() => {
         client.on('connect', () => {
         console.log('connected to broker');
-        
     })
     client.subscribe(`game/${identity[0]}`);
     client.subscribe(`game/${identity[0]}/chat`);
     client.subscribe(`game/${identity[0]}/chat/${identity[1]}`);
-    client.publish(`game/${identity[0]}/chat`, JSON.stringify({player: identity[1], message: 'CONNECTED'}));
+    client.publish(`game/${identity[0]}/chat`, JSON.stringify({player: identity[1], message: 'CONNECTED', target: 'All', priv: false}));
     
     client.on('message', function (topic, message) {
         if (topic === `game/${identity[0]}`) {
@@ -43,13 +42,11 @@ function Game({identity}) {
                 setGameState(resp);   
             } else {
                 setChatState(chatState => [...chatState,JSON.parse(message.toString())]);
-                
             }
         }
         );
     },[])
-    
-    
+
     async function send_game_state_when_rerolled() {
         let ns = gameState;
         ns.clicked_dices = clicked;
@@ -115,17 +112,37 @@ function Game({identity}) {
 
     const sendMessage = async (mess, target) => {
         document.getElementById('chatinput').value="";
-
+	if (mess !== "") {
+	(mess.length > 35) ? mess = mess.slice(0,35) : mess = mess
+	let priv;
+	if (chatState.length > 8) {
+		setChatState(chatState.slice(-7))
+	}
+	if ( target === "" || target === "All"  ) {
+		priv = false;
+	} else if (target === identity[1]) {
+		priv = true;
+	}
+	 else {
+		priv = true;
+		setChatState([...chatState, {priv: true, player: identity[1], message: mess, target: target}])
+	}
         try {
             await Axios({
             method: "post",
             url: `/chat`,
-            data: {id: identity[0], player: identity[1], message: mess, target: target}
+            data: {priv: priv,id: identity[0], player: identity[1], message: mess, target: target}
         });
         } catch (error) {
             console.error(error);
         }
-    } 
+    }
+}
+	const nextMove = (mm) => {
+		if (mm === gameState.state.length) {
+			return 1
+		} else return mm+1
+}
 
 
     return (
@@ -133,8 +150,6 @@ function Game({identity}) {
             {gameState.winner ? (<div style={{textAlign:'center'}}> <h1>WINNER IS PLAYER {gameState.winner}</h1></div>) 
             : <div>{gameState.started ?
                     <div className="game">
-                        
-                        
                         <div className='display'>
                             <div className='top'>
                                 <Chat state={gameState.state} chatState={chatState} identity={identity} sendMessage={sendMessage}/>
@@ -143,7 +158,6 @@ function Game({identity}) {
                                     {gameState.dices_state.map(dice => {
                                             let ids=uuidv4()
                                         return (
-                                            
                                             <img key={ids} id={ids} style={(dice.clicked==true)? {border: 'black solid 2px'} : {border: 'none'}} className='dice' onClick={() => { generateBorderWhenClicked(ids,dice)}} src={dices[dice.value]}/>
                                         )})}
                                     </div>
@@ -154,12 +168,13 @@ function Game({identity}) {
                                         :
                                         <div></div>
                                         }
+				    {(nextMove(identity[1]) === gameState.move) ? <FastRewindIcon variant="contained" ></FastRewindIcon>: <div></div>}
                                     </div>
                                 </div>
                                 <div className='info'>
-                                    <h3>You are player {identity[1]}</h3>
-                                    <h2>move: player {gameState.move}</h2>
-                                    <h2 style={{color: 'orange'}}>rerolls left {3-gameState.rerolls}</h2>
+                                    <h3 style={{ marginTop: '1vh' }}>You are player {identity[1]}</h3>
+                                    <h2 style={{ marginTop:'1vh' }}>move: player {gameState.move}</h2>
+                                    <h2 style={{color: 'orange', marginTop: '1vh'}}>rerolls left {3-gameState.rerolls}</h2>
                                     
                                 </div>
                             </div>

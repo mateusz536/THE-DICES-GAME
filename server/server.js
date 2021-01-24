@@ -19,7 +19,6 @@ let games = [];
 
 
 app.post('/game', (req,res) => {
-    console.log(req.body.activity === actions.START)
     switch (req.body.activity) {
 
         case actions.CREATE:
@@ -27,7 +26,7 @@ app.post('/game', (req,res) => {
             games = [...games, {...default_game, id: id, state: [player_state(1)]}]
             return res.send({gameid: id})
 
-        
+
         case actions.START:
             let game1 = games.find(g => g.id === req.body.id)
             game1.started = true
@@ -55,7 +54,6 @@ app.post('/game', (req,res) => {
             return res.send(true)
 
         case actions.CHOICE:
-            
             let game3 = games.find(g => g.id === req.body.id)
             if (game3.move === game3.state.length) {
                 game3.move = 1
@@ -82,17 +80,14 @@ app.post('/game', (req,res) => {
             return res.send(true)
 
         case actions.JOIN:
-            console.log(req.body.activity)
-            console.log(actions.JOIN)
             let game = games.find(g => g.id === req.body.id)
 
             if (!game.started && game.state.length < 3) {
                 let newp = player_state(game.state.length + 1)
                 game.state = [...game.state, newp]
                 return res.send({player: game.state.length})
-            } else return res.send({player: -1})
+            } else return res.send({player: 0})
 
-        
         default:
             return res.send(true)
 
@@ -103,14 +98,13 @@ app.post('/chat', (req,res) => {
     let id = req.body.id;
     let playerid = req.body.player;
     let message = req.body.message;
-    if (message.length > 40) {
-	message = message.slice(0,40);
-}
+    let priv = req.body.priv;
     let target = req.body.target;
     let son = {
         player: playerid,
         message: message,
-        target: target
+        target: target,
+	priv: priv
     }
     if (target === 'All' || target === '') {
         (target === '') ? target='All' : target = target;
