@@ -5,7 +5,7 @@ const uuid = require('uuid')
 const app = express();
 const uuidv4 = uuid.v4
 const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://http://10.45.3.52:1883');
+const client = mqtt.connect('mqtt://10.45.3.52:1883');
 const wzor = require('./jsonwzor')
 const default_game = wzor.jsonik;
 const player_state = wzor.genPlayerState;
@@ -72,7 +72,6 @@ app.post('/game', (req,res) => {
  
             game6 = games.find(x => x.id === req.body.id)
             game6.prevState = obj
-            console.log(obj.state[0].points)
             if (game6.move === game6.state.length) {
                 game6.move = 1
             } else {
@@ -95,26 +94,26 @@ app.post('/game', (req,res) => {
             points = player.points.find(p => p.name === req.body.name);
             points.value = req.body.points;
             points.chosen = true
-            console.log(obj.state[0].points)
             client.publish(`game/${req.body.id}`, JSON.stringify(game6));
             return res.send(true)
- 
+
         case actions.JOIN:
             let game = games.find(g => g.id === req.body.id)
- 
+
             if (!game.started && game.state.length < 3) {
                 let newp = player_state(game.state.length + 1)
                 game.state = [...game.state, newp]
                 return res.send({player: game.state.length})
             } else return res.send({player: 0})
- 
+
         case actions.CHANGE:
             let game4 = games.find(g => g.id === req.body.id);
             game4.voting = true;
+		console.log('change')
             client.publish(`game/${req.body.id}/chat`, JSON.stringify({id: -1, player: -1, message: `PLAYER ${req.body.player} WANTS TO CHANGE MOVE`}));
             client.publish(`game/${req.body.id}/chat`, JSON.stringify({id: -1, player: -1, message: `WRITE /allow TO LET HIM CHANGE`}));
             client.publish(`game/${req.body.id}`, JSON.stringify(game4));
- 
+
         default:
             return res.send(true)
  
@@ -122,6 +121,7 @@ app.post('/game', (req,res) => {
 })
  
 app.post('/chat', (req,res) => {
+    console.log(req.body)
     let id = req.body.id;
     let playerid = req.body.player;
     let message = req.body.message;
@@ -145,9 +145,8 @@ app.post('/chat', (req,res) => {
                         b.firstMove = false
                         b.voting = false
                         b.votes = 0
- 
                         client.publish(`game/${id}`, JSON.stringify(b));
-                        client.publish(`game/${req.body.id}/chat`, JSON.stringify({id: -1, player: -1, message: `PREVIOUS STATE OF THE GAME`}));
+                        client.publish(`game/${id}/chat`, JSON.stringify({id: -1, player: -1, message: `PREVIOUS STATE OF THE GAME`}));
                     }
                 }
                 return [...a, b]

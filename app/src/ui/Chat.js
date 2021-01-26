@@ -6,7 +6,7 @@ import {TextField, Button} from '@material-ui/core'
 import {useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 
-const Chat = ({state,cl,chatState, sendMessage}) => {
+const Chat = ({identity,state,cl,chatState, sendMessage}) => {
     const [message, setMessage] = useState('')
     const [target, setTarget] = useState('')
     const handleChange = (event) => {
@@ -26,7 +26,7 @@ const Chat = ({state,cl,chatState, sendMessage}) => {
 }
     const createMessage = (msg) => {
         let mess = "";
-        if (msg.player !== -1 && msq.player !== 0) {
+        if (msg.player !== -1 && msg.player !== 0) {
             if (msg.player === 0 ) msg.player = 'spectator'
             if (msg.target === 'All' || msg.target === "") {
                     mess += "(All) | ";

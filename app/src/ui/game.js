@@ -18,7 +18,7 @@ const wzor = require('./jsonwzor')
 const jsonik = wzor.jsonik;
 const player_state = wzor.player_state;
 const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://http://10.45.3.52/:8000/mqtt');
+const client = mqtt.connect('mqtt://10.45.3.52:8000/mqtt');
 
 
 
@@ -184,7 +184,6 @@ function Game({identity}) {
                                         <div></div>
                                         }
 				                        {(nextMove(identity[1]) === gameState.move && gameState.firstMove) ? <h1 onClick={ () => { sendChangeMove() } } className='rewind'>⏪</h1>: <h1></h1>}
-                                        <button onClick={() => { console.log(gameState) }}>asdsadadas</button>
                                     </div>
                                 </div>
                                 <div className='info'>
@@ -199,7 +198,7 @@ function Game({identity}) {
                                 {gameState.state.map(st => {
                                     let id1 = uuidv4()
                                     return (
-                                        <div key={id1} className='ptable'><BasicTable currentMove={gameState.move} gameid={identity[0]} playerid={identity[1]} tableid={st.player} dices={gameState.dices_state} points={st.points}/></div>
+                                        <div key={id1} className='ptable'><BasicTable currentMove={gameState.move}  gameState={gameState} gameid={identity[0]} playerid={identity[1]} tableid={st.player} dices={gameState.dices_state} points={st.points}/></div>
                                     )
                                 })}
                                 

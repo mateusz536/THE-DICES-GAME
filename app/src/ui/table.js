@@ -8,17 +8,17 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Axios from 'axios'
 import {v4 as uuidv4} from 'uuid'
-
+ 
 const useStyles = makeStyles({
   table: {
     minWidth: 100
   },
 });
-
+ 
 function createData(player, points) {
   return { player, points};
 }
-
+ 
 function calculateDiceState (dices) {
   let x = {
     '1': 0,
@@ -28,36 +28,36 @@ function calculateDiceState (dices) {
     '5': 0,
     '6': 0
   }
-
+ 
   dices.forEach(element => {
     x[String(element.value)] +=1
   });
-
+ 
   return x
 }
-
+ 
 function calculateValue(name,value, dicesState) {
   if (value == 0) {
     let x = calculateDiceState(dicesState)
       switch (name) {
       case '1':
           return x['1']
-
+ 
       case '2':
           return x['2']*2
-    
+ 
       case '3':
           return x['3']*3
-
+ 
       case '4':
           return x['4']*4
-
+ 
       case '5':
           return x['5']*5
-
+ 
       case '6':
           return x['6']*6
-
+ 
       case '3x':
           let val1 = 0
           let iscor1 = false
@@ -73,7 +73,7 @@ function calculateValue(name,value, dicesState) {
               return val1
           }
           return 0
-
+ 
       case '3+2x':
         let is3 = false;
         let is2 = false;
@@ -84,12 +84,12 @@ function calculateValue(name,value, dicesState) {
           if (x[i] === 2) {
             is2 = true;
           }
-
-          
+ 
+ 
         }
         if (is3 && is2) return 25
           else return 0
-
+ 
       case '4x':
           let val2 = 0
           let iscor = false
@@ -105,7 +105,7 @@ function calculateValue(name,value, dicesState) {
               return val2
           }
           return 0
-      
+ 
       case 'small straight':
           let ar = [];
           dicesState.forEach(el => {
@@ -117,12 +117,12 @@ function calculateValue(name,value, dicesState) {
               if (uniq1[0] == uniq1[1] - 1 && uniq1[1] == uniq1[2] - 1 && uniq1[2] == uniq1[3] - 1) {
                   return 30
               }
-
+ 
           }
           return 0
-          
-
-
+ 
+ 
+ 
       case 'big straight':
           let ar1 = [];
           dicesState.forEach(el => {
@@ -136,28 +136,28 @@ function calculateValue(name,value, dicesState) {
           }
           } 
           return 0
-
+ 
       case 'general':
           for (let i in x) {
               if (x[i] === 5) return 50
           }
           return 0
-      
+ 
       case 'chance':
           let p = 0
           for (let i in x) {
               p += x[i]*i;
           }
           return p
-          
-
+ 
+ 
     }
   } else {
     return value
   }
 }
-
-
+ 
+ 
 const calculateSum = (points) => {
   let sum = 0
   points.forEach(el => {
@@ -165,23 +165,23 @@ const calculateSum = (points) => {
   })
   return sum
 }
-
+ 
 const setToSet=(id) => {
   document.getElementById(id).className = 'pointed'
 }
-
-
-
-export default function BasicTable({currentMove,gameid,dices, points, playerid, tableid}) {
+ 
+ 
+ 
+export default function BasicTable({gameState, currentMove,gameid,dices, points, playerid, tableid}) {
   const classes = useStyles();
-
+ 
   const findinpoints =  (name) => {
     let x = points.find(p => p.name === name);
     return x.chosen
   }
-
-
-
+ 
+ 
+ 
   const rowsgen = () =>{
   if (currentMove===playerid && tableid===playerid) {
     return [
@@ -220,7 +220,7 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
   }
 }
   const rows = rowsgen();
-
+ 
   async function sendChoice(name, point) {
     console.log(currentMove, playerid, tableid)
     if (currentMove === playerid && currentMove === tableid && name !== 'sum' && !findinpoints(name)) {
@@ -233,7 +233,11 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
             name: name,
             points: point,
             activity: 5,
-            id: gameid
+            id: gameid,
+            rerolls: gameState.rerolls,
+            rounds: gameState.rounds,
+            state: gameState.state,
+            dices_state: gameState.dices_state
           }
         });
       } catch (error) {
@@ -241,7 +245,7 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
       }
     }
   }
-
+ 
   return (
     <TableContainer className='ptable'  component={Paper}>
       <Table className={classes.table, 'ptable'} aria-label="simple table" size='small'>
@@ -253,7 +257,7 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
         </TableHead>
         <TableBody>
           {rows.map((row) => {
-          
+ 
           let rowid = uuidv4()
           return (
             <TableRow key={row.player} id={rowid}>
@@ -274,5 +278,6 @@ export default function BasicTable({currentMove,gameid,dices, points, playerid, 
       </Table>
     </TableContainer>
   );
-
+ 
 }
+ 
