@@ -18,7 +18,7 @@ const wzor = require('./jsonwzor')
 const jsonik = wzor.jsonik;
 const player_state = wzor.player_state;
 const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://10.45.3.52:8000/mqtt');
+const client = mqtt.connect('mqtt://http://10.45.3.52/:8000/mqtt');
 
 
 
@@ -38,7 +38,9 @@ function Game({identity}) {
     
     client.on('message', function (topic, message) {
         if (topic === `game/${identity[0]}`) {
+            
             let resp = JSON.parse(message.toString());
+            console.log(resp)
                 setGameState(resp);   
             } else {
                 setChatState(chatState => [...chatState,JSON.parse(message.toString())]);
@@ -67,7 +69,7 @@ function Game({identity}) {
         try {
             await Axios({
             method: "post",
-            url: `/game}`,
+            url: `/game`,
             data: {...gameState, activity: 5}
         });
         } catch (error) {
@@ -144,6 +146,19 @@ function Game({identity}) {
 		} else return mm+1
 }
 
+    async function sendChangeMove() {
+        let obj = {id: identity[0], activity: 6, player: identity[1]}
+        try {
+            await Axios({
+            method: "post",
+            url: `/game`,
+            data: obj
+        });
+        } catch (error) {
+        console.error(error);
+        }
+    }
+
 
     return (
         <div> 
@@ -154,7 +169,7 @@ function Game({identity}) {
                             <div className='top'>
                                 <Chat state={gameState.state} chatState={chatState} identity={identity} sendMessage={sendMessage}/>
                                 <div className='rolltable'>
-                                    <div style={{marginTop:'180px', height:'50px'}}>
+                                    <div style={{marginTop:'100px', height:'50px'}}>
                                     {gameState.dices_state.map(dice => {
                                             let ids=uuidv4()
                                         return (
@@ -168,7 +183,8 @@ function Game({identity}) {
                                         :
                                         <div></div>
                                         }
-				    {(nextMove(identity[1]) === gameState.move) ? <FastRewindIcon variant="contained" ></FastRewindIcon>: <div></div>}
+				                        {(nextMove(identity[1]) === gameState.move && gameState.firstMove) ? <h1 onClick={ () => { sendChangeMove() } } className='rewind'>⏪</h1>: <h1></h1>}
+                                        <button onClick={() => { console.log(gameState) }}>asdsadadas</button>
                                     </div>
                                 </div>
                                 <div className='info'>

@@ -8,7 +8,11 @@ const jsonik = {
     clicked_dices:[],
     action: '',
     rounds: 0,
-    winner: null
+    winner: null,
+    firstMove: false,
+    voting: false,
+    votes: 0,
+    prevState: {}
     }
 const genPlayerState = (id) => ({ 
     player: id,
@@ -31,5 +35,6 @@ const genPlayerState = (id) => ({
 })
 
 
-module.exports =  {jsonik, genPlayerState}
 
+
+module.exports =  {jsonik, genPlayerState}

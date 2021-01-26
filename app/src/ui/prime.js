@@ -26,6 +26,8 @@ function Prime({toggleGameStarted, setIdentity}) {
           console.error(error);
         }
       }
+
+
       async function joinGame(id) {
         try {
             const response = await Axios({
